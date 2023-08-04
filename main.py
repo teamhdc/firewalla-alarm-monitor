@@ -31,6 +31,8 @@ def check_alarms():
     for key in keys:
         # Retrieve all fields and values for the key
         alarm_data = r.hgetall(key)
+        if "aid" not in alarm_data:
+            continue
         alarm_id = alarm_data['aid']
 
         # Check if alarm has already been sent over MQTT
@@ -43,4 +45,3 @@ def check_alarms():
 while True:
     check_alarms()
     time.sleep(1)
-
