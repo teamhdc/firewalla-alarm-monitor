@@ -12,6 +12,26 @@ cat <<EOF > /home/pi/.vector/config/vector.toml
 data_dir = "/home/pi/.vector/data"
 EOF
 
+# Create systemd service for vector
+sudo tee /etc/systemd/system/vector.service <<EOF
+[Unit]
+Description=Vector
+Documentation=https://vector.dev
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+User=pi
+Group=pi
+ExecStartPre=/home/pi/.vector/bin/vector validate --config-dir /etc/vector/config.d/
+ExecStart=/home/pi/.vector/bin/vector --config-dir /etc/vector/config.d/
+ExecReload=/home/pi/.vector/bin/vector validate --config-dir /etc/vector/config.d/
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
 # Create Vector azure config
 cat <<EOF > /home/pi/.vector/config/azure.toml
 [sources.firelog]
@@ -62,6 +82,7 @@ inputs = [ "firelog", "fireapi", "firekick", "firemain", "firemon", "firerouter"
 customer_id = "$WORKSPACE_ID"
 log_type = "firewalla"
 shared_key = "$WORKSPACE_SECRET"
+host = "ods.opinsights.azure.us"
 EOF
 
 # Install python dependencies
@@ -85,7 +106,7 @@ MQTT_USERNAME=$MQTT_USERNAME
 MQTT_PASSWORD=$MQTT_PASSWORD
 EOF
 
-# Create systemd service
+# Create systemd service for fam
 sudo tee /etc/systemd/system/fam.service <<EOF
 [Unit]
 Description=Firewalla Alarm Monitor
@@ -106,3 +127,5 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl enable fam
 sudo systemctl start fam
+sudo systemctl enable vector
+sudo systemctl start vector
