@@ -1,0 +1,48 @@
+[sources.firelog]
+    type = "file"
+    ignore_older_secs = 600
+    include = [ "/home/pi/logs/firelog.log" ]
+    read_from = "beginning"
+
+[sources.fireapi]
+    type = "file"
+    ignore_older_secs = 600
+    include = [ "/home/pi/logs/FireApi.log" ]
+    read_from = "beginning"
+
+[sources.firekick]
+    type = "file"
+    ignore_older_secs = 600
+    include = [ "/home/pi/logs/FireKick.log" ]
+    read_from = "beginning"
+
+[sources.firemain]
+    type = "file"
+    ignore_older_secs = 600
+    include = [ "/home/pi/logs/FireMain.log" ]
+    read_from = "beginning"
+
+[sources.firemon]
+    type = "file"
+    ignore_older_secs = 600
+    include = [ "/home/pi/logs/FireMon.log" ]
+    read_from = "beginning"
+
+[sources.firerouter]
+    type = "file"
+    ignore_older_secs = 600
+    include = [ "/home/pi/logs/FireRouter.log" ]
+    read_from = "beginning"
+    
+[sources.firetrace]
+    type = "file"
+    ignore_older_secs = 600
+    include = [ "/home/pi/logs/Trace.log" ]
+    read_from = "beginning"
+
+[sinks.azure_sync]
+type = "azure_monitor_logs"
+inputs = [ "firelog" ]
+customer_id = ""
+log_type = "firewalla"
+shared_key = ""
